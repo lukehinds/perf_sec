@@ -1,0 +1,166 @@
+               _________________________________________
+
+                NFV PERFORMANCE SECURITY CONSIDERATIONS
+
+                               Luke Hinds
+               _________________________________________
+
+
+Table of Contents
+_________________
+
+Security Risks in SRIOV
+.. MAC Spoofing
+.. Network Flow Control
+.. Rate limiting
+DPDK
+.. Mulit Process Limit in DPDK
+.. Pause Frame Exploit
+OVS & SDN
+.. Use OVSDB Authentification
+.. Protect Controllers
+
+
+
+
+
+Security Risks in SRIOV
+=======================
+
+  - Mac Spoofing
+  - Network Flow Control
+  - Rate Limiting
+
+
+MAC Spoofing
+~~~~~~~~~~~~
+
+  Guests can assign their own MAC addreses, thereby allowing MAC
+  spoofing..
+  This can be negated using the IP cmd..
+  ,----
+  | ip link set eth0 vf 3 mac xx:yy:xx:yy:xx:yy vlan 100 spoofchk on
+  `----
+
+  It can also be toggled in OpenStack neutron:
+
+  ,----
+  | stack@devstack:~/devstack$ neutron net-show net1
+  | +---------------------------+--------------------------------------+
+  | | Field                     | Value                                |
+  | +---------------------------+--------------------------------------+
+  | | admin_state_up            | True                                 |
+  | | id                        | 725ebfa1-c3c3-43fa-b8c2-cac99f1f88fb |
+  | | mtu                       | 0                                    |
+  | | name                      | net1                                 |
+  | | port_security_enabled     | True                                 |
+  | | provider:network_type     | vxlan                                |
+  | | provider:physical_network |                                      |
+  | | provider:segmentation_id  | 1001                                 |
+  | | router:external           | False                                |
+  | | shared                    | False                                |
+  | | status                    | ACTIVE                               |
+  | | subnets                   | 1d58d120-4990-41d8-b1f2-2354df54328a |
+  | | tenant_id                 | ba328cf9aa72429aad0535ec4adcd882     |
+  | | vlan_transparent          | False                                |
+  | +---------------------------+--------------------------------------+
+  `----
+
+
+Network Flow Control
+~~~~~~~~~~~~~~~~~~~~
+
+  Flow Control exists to provide lossless layer 2 network communications
+  This enables a receiver to send a signal to the transmitter to pause
+  traffic
+  A `PAUSE` frame is sent to the transmitter whenever the receiver side
+  runs out of buffers
+  SR-IOV enables a VM to share the physical link on the host.
+
+  A malicious VM could cause temporary halt to the traffic of all VMs by
+  manipulating flow control feature.
+  At NIC side, the Ethernet flow control can be turned off...
+  ,----
+  | ethtool -A <PF ethX> autoneg off rx off tx off
+  `----
+  Most NEPs hardware typically allow flow-control to be disabled
+  (sometimes per port)
+  *Be Mindful:* TCP incast (many-to-one communications)
+
+
+Rate limiting
+~~~~~~~~~~~~~
+
+  A single VNF consumes all bandwidth available to a physical link,
+  denying other VFs
+  To avoid this, bandwidth limit can be set at individual VF level as
+  shown below:
+
+  ,----
+  | ip link set eth2 vf 0 rate 100 # where rate is mentioned in Mbps
+  `----
+  If the switch where the SR-IOV physical NIC is connected supports MAC
+  based rate limiting, then the same restriction can be applied on
+  switch side.
+
+
+DPDK
+====
+
+  Data-Plane-Development-Kit Security considerations
+
+
+Mulit Process Limit in DPDK
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The multi-process feature requires that the exact same hugepage memory
+  mappings be present in all applications.
+  - The Linux security feature - Address-Space Layout Randomization
+    (ASLR) can interfere with this
+  mapping.
+
+  - VNF vendors may request to disable this feature in order to run
+    multi-process applications.
+  Disabling Address-Space Layout Randomization (ASLR) may have security
+  implications, so disable only when these have been understood.
+
+  [http://dpdk.org/doc/guides/prog_guide/multi_proc_support.html]
+
+
+Pause Frame Exploit
+~~~~~~~~~~~~~~~~~~~
+
+  Pause frame exploits are currently not possible, due to flow controls
+  being disabled in DPDK
+
+  [http://seclists.org/oss-sec/2015/q4/425].
+
+  This means that adequate protection against tcp-incast would not be
+  present, until the dpdk code is remedied to provide some form of frame
+  management.
+
+
+OVS & SDN
+=========
+
+  OpenVSwitch Security considerations
+
+
+Use OVSDB Authentification
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Protect against flow table export or manipulation with TLS
+
+  ,----
+  | --ca-cert=cacert.pem --bootstrap-ca-cert=cacert.pem
+  `----
+
+
+Protect Controllers
+~~~~~~~~~~~~~~~~~~~
+
+  Rate Limiting Northbound Rest API of SDN Controllers to prevent
+  overload
+
+  Use Network Segregation / Security Zones for Control and Data Plane
+  traffic
