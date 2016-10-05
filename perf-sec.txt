@@ -1,14 +1,15 @@
-               _________________________________________
+                       __________________________
 
-                NFV PERFORMANCE SECURITY CONSIDERATIONS
+                        NFV PERFORMANCE SECURITY
 
                                Luke Hinds
-               _________________________________________
+                       __________________________
 
 
 Table of Contents
 _________________
 
+Note before we start
 Security Risks in SRIOV
 .. MAC Spoofing
 .. Network Flow Control
@@ -16,13 +17,26 @@ Security Risks in SRIOV
 DPDK
 .. Mulit Process Limit in DPDK
 .. Pause Frame Exploit
-OVS & SDN
-.. Use OVSDB Authentification
-.. Protect Controllers
+OpenVSwitch
+.. Use OVS PKI
+.. QoS
+SDN Controllers
 The End.
 
 
 
+
+
+Note before we start
+====================
+
+  NFV Security is a wide scoped topic, so for this talk I have focused
+  in on the synergies with NFV network peformance related functionality
+  only.
+
+  ,----
+  | "What about Disc encryption..?" =  We are going to need another session!
+  `----
 
 
 Security Risks in SRIOV
@@ -155,27 +169,61 @@ Pause Frame Exploit
   management.
 
 
-OVS & SDN
-=========
+OpenVSwitch
+===========
 
   OpenVSwitch Security considerations
 
 
-Use OVSDB Authentification
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use OVS PKI
+~~~~~~~~~~~
 
-  Protect against flow table export or manipulation with TLS
+  Protect against flow table export or manipulation with TLS protection
+
+  [http://openvswitch.org/support/dist-docs/INSTALL.SSL.md.html]
+
+
+QoS
+~~~
+
+  Rate Limiting can be set for OVS instances:
+
+  + ingress-policing-rate:
+  The maximum rate (in Kbps) that a VM is allowed to send.
+  + ingress-policing-burst:
+  A parameter to indicate the maximum burst
+
+  For example:
 
   ,----
-  | --ca-cert=cacert.pem --bootstrap-ca-cert=cacert.pem
+  | ovs-vsctl set interface tap0 ingress_policing_rate=1000
+  | ovs-vsctl set interface tap0 ingress_policing_burst=100
+  `----
+
+  Which as we saw earlier, is also exposed to OpenStack Neutron...
+
+  ,----
+  | $ neutron qos-bandwidth-limit-rule-create bw-limiter --max-kbps 3000 \
+  |   --max-burst-kbps 300
+  | 
+  | Created a new bandwidth_limit_rule:
+  | +----------------+--------------------------------------+
+  | | Field          | Value                                |
+  | +----------------+--------------------------------------+
+  | | id             | 92ceb52f-170f-49d0-9528-976e2fee2d6f |
+  | | max_burst_kbps | 300                                  |
+  | | max_kbps       | 3000                                 |
+  | +----------------+--------------------------------------+
   `----
 
 
-Protect Controllers
-~~~~~~~~~~~~~~~~~~~
+SDN Controllers
+===============
 
-  Rate Limiting Northbound Rest API of SDN Controllers to prevent
-  overload
+  Rate Limit Northbound Rest API of SDN Controllers to prevent overload
+  of HTTP requests
+
+  Be mindful of southbound packet storms on the userplane.
 
   Use Network Segregation / Security Zones for Control and Data Plane
   traffic

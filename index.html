@@ -23,41 +23,28 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h1 class="title">NFV Performance Security considerations</h1><h2 class="author">Luke Hinds</h2><p class="date">Created: 2016-10-05 Wed 15:52</p>
-</section>
-<section id="table-of-contents">
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#/slide-orgheadline4">Security Risks in SRIOV</a>
-<ul>
-<li><a href="#/slide-orgheadline1">MAC Spoofing</a></li>
-<li><a href="#/slide-orgheadline2">Network Flow Control</a></li>
-<li><a href="#/slide-orgheadline3">Rate limiting</a></li>
-</ul>
-</li>
-<li><a href="#/slide-orgheadline7">DPDK</a>
-<ul>
-<li><a href="#/slide-orgheadline5">Mulit Process Limit in DPDK</a></li>
-<li><a href="#/slide-orgheadline6">Pause Frame Exploit</a></li>
-</ul>
-</li>
-<li><a href="#/slide-orgheadline10">OVS &amp; SDN</a>
-<ul>
-<li><a href="#/slide-orgheadline8">Use OVSDB Authentification</a></li>
-<li><a href="#/slide-orgheadline9">Protect Controllers</a></li>
-</ul>
-</li>
-<li><a href="#/slide-orgheadline11">The End.</a></li>
-</ul>
-</div>
-</div>
+<section id="sec-title-slide"><h1 class="title">NFV Performance Security</h1><h2 class="author">Luke Hinds</h2><p class="date">Created: 2016-10-05 Wed 16:56</p>
 </section>
 
 <section>
-<section id="slide-orgheadline4">
-<h2 id="orgheadline4">Security Risks in SRIOV</h2>
+<section id="slide-orgheadline1">
+<h2 id="orgheadline1">Note before we start</h2>
+<p>
+NFV Security is a wide scoped topic, so for this talk I have focused in on the synergies with
+NFV network peformance related functionality only.
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-bash"><span style="color: #2d9574;">"What about Disc encryption..?"</span> =  We are going to need another session!
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline5">
+<h2 id="orgheadline5">Security Risks in SRIOV</h2>
 <ul>
 <li>Mac Spoofing</li>
 <li>Network Flow Control</li>
@@ -66,8 +53,8 @@
 </ul>
 
 </section>
-<section id="slide-orgheadline1">
-<h3 id="orgheadline1">MAC Spoofing</h3>
+<section id="slide-orgheadline2">
+<h3 id="orgheadline2">MAC Spoofing</h3>
 <p>
 Guests can assign their own MAC addreses, thereby allowing MAC spoofing..
 </p>
@@ -113,8 +100,8 @@ It can also be toggled in OpenStack neutron:
 </div>
 
 </section>
-<section id="slide-orgheadline2">
-<h3 id="orgheadline2">Network Flow Control</h3>
+<section id="slide-orgheadline3">
+<h3 id="orgheadline3">Network Flow Control</h3>
 <p>
 Flow Control exists to provide lossless layer 2 network communications
 </p>
@@ -160,8 +147,8 @@ TCP incast (many-to-one communications)
 </p>
 
 </section>
-<section id="slide-orgheadline3">
-<h3 id="orgheadline3">Rate limiting</h3>
+<section id="slide-orgheadline4">
+<h3 id="orgheadline4">Rate limiting</h3>
 <p>
 A single VNF consumes all bandwidth available to a physical link, denying other VFs
 </p>
@@ -209,15 +196,15 @@ Created a new bandwidth_limit_rule:
 </section>
 </section>
 <section>
-<section id="slide-orgheadline7">
-<h2 id="orgheadline7">DPDK</h2>
+<section id="slide-orgheadline8">
+<h2 id="orgheadline8">DPDK</h2>
 <p>
 Data-Plane-Development-Kit Security considerations
 </p>
 
 </section>
-<section id="slide-orgheadline5">
-<h3 id="orgheadline5">Mulit Process Limit in DPDK</h3>
+<section id="slide-orgheadline6">
+<h3 id="orgheadline6">Mulit Process Limit in DPDK</h3>
 <p>
 The multi-process feature requires that the exact same hugepage memory mappings be present 
 in all applications.
@@ -232,6 +219,7 @@ in all applications.
 </ul>
 </section>
 <section>
+
 <p>
 Disabling Address-Space Layout Randomization (ASLR) may have security implications, so disable only
 when these have been understood.
@@ -242,8 +230,8 @@ when these have been understood.
 </p>
 
 </section>
-<section id="slide-orgheadline6">
-<h3 id="orgheadline6">Pause Frame Exploit</h3>
+<section id="slide-orgheadline7">
+<h3 id="orgheadline7">Pause Frame Exploit</h3>
 <p>
 Pause frame exploits are currently not possible, due to flow controls being disabled in DPDK 
 </p>
@@ -260,33 +248,100 @@ code is remedied to provide some form of frame management.
 </section>
 </section>
 <section>
-<section id="slide-orgheadline10">
-<h2 id="orgheadline10">OVS &amp; SDN</h2>
+<section id="slide-orgheadline11">
+<h2 id="orgheadline11">OpenVSwitch</h2>
 <p>
 OpenVSwitch Security considerations
 </p>
 
 </section>
-<section id="slide-orgheadline8">
-<h3 id="orgheadline8">Use OVSDB Authentification</h3>
+<section id="slide-orgheadline9">
+<h3 id="orgheadline9">Use OVS PKI</h3>
 <p>
-Protect against flow table export or manipulation with TLS
+Protect against flow table export or manipulation with TLS protection
+</p>
+
+<p>
+<a href="http://openvswitch.org/support/dist-docs/INSTALL.SSL.md.html">http://openvswitch.org/support/dist-docs/INSTALL.SSL.md.html</a>
+</p>
+
+</section>
+<section id="slide-orgheadline10">
+<h3 id="orgheadline10">QoS</h3>
+<p>
+Rate Limiting can be set for OVS instances:
+</p>
+
+<ul>
+<li>ingress-policing-rate:</li>
+
+</ul>
+<p>
+The maximum rate (in Kbps) that a VM is allowed to send.
+</p>
+<ul>
+<li>ingress-policing-burst:</li>
+
+</ul>
+<p>
+A parameter to indicate the maximum burst 
+</p>
+
+<p>
+For example:
 </p>
 
 <div class="org-src-container">
 
-<pre  class="src src-bash">--ca-cert=cacert.pem --bootstrap-ca-cert=cacert.pem
+<pre  class="src src-bash">ovs-vsctl set interface tap0 <span style="color: #7590db;">ingress_policing_rate</span>=<span style="color: #a45bad;">1000</span>
+ovs-vsctl set interface tap0 <span style="color: #7590db;">ingress_policing_burst</span>=<span style="color: #a45bad;">100</span>
 </pre>
 </div>
 
 </section>
-<section id="slide-orgheadline9">
-<h3 id="orgheadline9">Protect Controllers</h3>
+<section>
+
+<p>
+Which as we saw earlier, is also exposed to OpenStack Neutron&#x2026;
+</p>
+
+</section>
+<section>
+
+<div class="org-src-container">
+
+<pre  class="src src-bash">$ neutron qos-bandwidth-limit-rule-create bw-limiter --max-kbps <span style="color: #a45bad;">3000</span> <span style="color: #2d9574;">\</span>
+  --max-burst-kbps <span style="color: #a45bad;">300</span>
+
+Created a new bandwidth_limit_rule:
++----------------+--------------------------------------+
+| Field          | Value                                |
++----------------+--------------------------------------+
+| id             | <span style="color: #a45bad;">92ceb52f-170f-49d0-9528-976e2fee2d6f</span> |
+| max_burst_kbps | <span style="color: #a45bad;">300</span>                                  |
+| max_kbps       | <span style="color: #a45bad;">3000</span>                                 |
++----------------+--------------------------------------+
+</pre>
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline12">
+<h2 id="orgheadline12">SDN Controllers</h2>
 </section>
 <section>
 
 <p>
-Rate Limiting Northbound Rest API of SDN Controllers to prevent overload
+Rate Limit Northbound Rest API of SDN Controllers to prevent overload of HTTP requests
+</p>
+
+</section>
+<section>
+
+<p>
+Be mindful of southbound packet storms on the userplane. 
 </p>
 
 </section>
@@ -299,8 +354,8 @@ Use Network Segregation / Security Zones for Control and Data Plane traffic
 </section>
 </section>
 <section>
-<section id="slide-orgheadline11">
-<h2 id="orgheadline11">The End.</h2>
+<section id="slide-orgheadline13">
+<h2 id="orgheadline13">The End.</h2>
 <p>
 Questions&#x2026;?
 </p>
