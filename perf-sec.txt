@@ -108,7 +108,8 @@ Rate limiting
 
   A single VNF consumes all bandwidth available to a physical link,
   denying other VFs
-  To avoid this, bandwidth limit can be set at individual VF level as
+
+  To avoid this, the bandwidth limit can be set at individual VF level as
   shown below:
 
   ,----
