@@ -19,6 +19,7 @@ DPDK
 OVS & SDN
 .. Use OVSDB Authentification
 .. Protect Controllers
+The End.
 
 
 
@@ -102,6 +103,21 @@ Rate limiting
   If the switch where the SR-IOV physical NIC is connected supports MAC
   based rate limiting, then the same restriction can be applied on
   switch side.
+  In OpenStack this can be as a QoS policy
+
+  ,----
+  | $ neutron qos-bandwidth-limit-rule-create bw-limiter --max-kbps 3000 \
+  |   --max-burst-kbps 300
+  | 
+  | Created a new bandwidth_limit_rule:
+  | +----------------+--------------------------------------+
+  | | Field          | Value                                |
+  | +----------------+--------------------------------------+
+  | | id             | 92ceb52f-170f-49d0-9528-976e2fee2d6f |
+  | | max_burst_kbps | 300                                  |
+  | | max_kbps       | 3000                                 |
+  | +----------------+--------------------------------------+
+  `----
 
 
 DPDK
@@ -116,8 +132,7 @@ Mulit Process Limit in DPDK
   The multi-process feature requires that the exact same hugepage memory
   mappings be present in all applications.
   - The Linux security feature - Address-Space Layout Randomization
-    (ASLR) can interfere with this
-  mapping.
+    (ASLR) can interfere with this mapping.
 
   - VNF vendors may request to disable this feature in order to run
     multi-process applications.
@@ -164,3 +179,9 @@ Protect Controllers
 
   Use Network Segregation / Security Zones for Control and Data Plane
   traffic
+
+
+The End.
+========
+
+  Questions...?
