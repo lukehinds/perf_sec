@@ -131,13 +131,19 @@ A `PAUSE` frame is sent to the transmitter whenever the receiver side runs out o
 </section>
 <section>
 <p>
-SR-IOV enables a VM to share the physical link on the host. 
+SR-IOV enables multiple VFs to share a physical link on the host. 
 </p>
+<p>
+(Average 256 VFs - single port NICs)
+</p>
+</section>
 
+<section>
 <p>
 A malicious VM could cause temporary halt to the traffic of all VMs by manipulating flow control feature. 
 </p>
 </section>
+
 <section>
 <p>
 At NIC side, the Ethernet flow control can be turned off&#x2026;
