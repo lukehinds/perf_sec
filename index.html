@@ -182,7 +182,7 @@ In OpenStack this can be as a QoS policy
 <div class="org-src-container">
 
 <pre  class="src src-bash">$ neutron qos-bandwidth-limit-rule-create bw-limiter --max-kbps <span style="color: #a45bad;">3000</span> <span style="color: #2d9574;">\</span>
-  --max-burst-kbps <span style="color: #a45bad;">300</span>
+  --max-burst-kbps <span style="color: #a45bad;">300</span>   --min-kbps <span style="color: #a45bad;">1000</span>
 
 Created a new bandwidth_limit_rule:
 +----------------+--------------------------------------+
@@ -191,6 +191,7 @@ Created a new bandwidth_limit_rule:
 | id             | <span style="color: #a45bad;">92ceb52f-170f-49d0-9528-976e2fee2d6f</span> |
 | max_burst_kbps | <span style="color: #a45bad;">300</span>                                  |
 | max_kbps       | <span style="color: #a45bad;">3000</span>                                 |
+| min_kbps       | <span style="color: #a45bad;">1000</span>                                 |
 +----------------+--------------------------------------+
 </pre>
 </div>
