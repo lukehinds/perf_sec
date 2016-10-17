@@ -1,9 +1,4 @@
-                       __________________________
-
-                        NFV PERFORMANCE SECURITY
-
-                               Luke Hinds
-                       __________________________
+Luke Hinds
 
 
 Table of Contents
@@ -13,7 +8,7 @@ Note before we start
 Security Risks in SRIOV
 .. MAC Spoofing
 .. Network Flow Control
-.. Rate limiting
+.. Bandwidth Exhaustion
 DPDK
 .. Mulit Process Limit in DPDK
 .. Pause Frame Exploit
@@ -103,13 +98,12 @@ Network Flow Control
   *Be Mindful:* TCP incast (many-to-one communications)
 
 
-Rate limiting
-~~~~~~~~~~~~~
+Bandwidth Exhaustion
+~~~~~~~~~~~~~~~~~~~~
 
   A single VNF consumes all bandwidth available to a physical link,
   denying other VFs
-
-  To avoid this, the bandwidth limit can be set at individual VF level as
+  To avoid this, bandwidth limit can be set at individual VF level as
   shown below:
 
   ,----
